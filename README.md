@@ -25,6 +25,11 @@ Use-cases supported:
 
 * A contribution page with pre-defined amounts (aka the most common use-case).
 * A contribution page with the "other amount" field.
+* A contribution page with recurring payment options.
+* All of the above, combined with a membership option.
+
+Complex price sets have not been exhaustively tested. If your use case is not
+there, whether it worked or not, please send a screenshot and let me know!
 
 Requirements
 ============
