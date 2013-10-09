@@ -1,5 +1,76 @@
 
 cj(function($) {
+  // Helper functions
+  function paymentconfirmpopup_set_name() {
+    var name = '';
+
+    if (cj('#billing_individual_prefix option:selected').size() > 0) {
+      name += cj('#billing_individual_prefix option:selected').html() + ' ';
+    }
+
+    if (cj('#billing_first_name').size() > 0) {
+      name += cj('#billing_first_name').val() + ' ';
+    }
+
+    if (cj('#billing_first_name').size() > 0) {
+      name += cj('#billing_last_name').val();
+    }
+
+    cj('#crm-paymentconfirmpopup-name').html(name);
+  }
+
+  function paymentconfirmpopup_set_recurrentinfo() {
+    if (cj('#is_recur').size() <= 0 || ! cj('#is_recur').is(':checked')) {
+      return;
+    }
+
+    var recurnode = cj('#is_recur').parent().clone();
+
+    recurnode.find('*').each(function(key, val) {
+      var id = cj(this).attr('id');
+
+      if (id) {
+        cj(this).attr('id', id + '-clone');
+      }
+    });
+
+    var html = recurnode.html();
+    cj('#crm-paymentconfirmpopup-section-recurrent').html(html);
+
+    // copy the original input values, since clone does not
+    // copy the value unless it was part of the original html.
+    cj('#is_recur').parent().find('*').each(function(key, val) {
+      if (! (cj(this).attr('type') == 'text' || cj(this).is('select'))) {
+        return;
+      }
+
+      var id = cj(this).attr('id');
+
+      if (id) {
+        var v = cj(this).val();
+        cj('#' + id + '-clone').val(v);
+        cj('#' + id + '-clone').prop('disabled', true);
+      }
+    });
+
+    // Set the size of the text inputs to the width of their value
+    cj('#crm-paymentconfirmpopup-section-recurrent > input.form-text').each(function(key, val) {
+      var size = cj(this).val();
+      size = '' + size;
+      size = size.length;
+      cj(this).attr('size', size);
+    });
+
+    // Replace the select with its text value
+    if (cj('#crm-paymentconfirmpopup-section-recurrent select#frequency_unit-clone').size() > 0) {
+      var textvalue = cj('#crm-paymentconfirmpopup-section-recurrent select#frequency_unit-clone option:selected').html();
+      cj('#crm-paymentconfirmpopup-section-recurrent select#frequency_unit-clone').replaceWith('<span>' + textvalue + '</span>');
+    }
+
+    // Hide the checkbox clone
+    cj('#is_recur-clone').hide();
+  }
+
   cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').click(function() {
     // Check if the form has errors
 /* js validation is still not enabled by default in 4.4. You may want to add JS for validation.
@@ -7,25 +78,27 @@ cj(function($) {
       return false;
     }
 */
-
-    // Get the contribution amount
-    var priceid = cj('#crm-container #priceset input:checked').attr('id');
-
-    // There may be many contrib amounts (ex: membership + donation)
-    // or just plain "Other Amount" contrib, in which case, we will want
-    // to skip inserting a "newline" (<br>).
-    var br = true;
+    var pricehtml = '';
 
     // Reset the popup content, just in case
     cj('#crm-paymentconfirmpopup-section-amount').html('');
 
-    if (priceid) {
-      // Label amount might be: $50 or "1 year membership - $5"
-      var otheramountlabel = ts("Other Amount");
-      var selectedamountlabel = cj('label[for=' + priceid + ']').html();
-      // cj('#crm-paymentconfirmpopup-section-amount').html(selectedamountlabel);
+    // Get the contribution amount
+    cj('#crm-container #priceset input:checked').each(function(key, val) {
+      var priceid = cj(this).attr('id');
 
-      if (selectedamountlabel == otheramountlabel || selectedamountlabel == 'Other Amount') {
+      // There may be many contrib amounts (ex: membership + donation)
+      // or just plain "Other Amount" contrib, in which case, we will want
+      // to skip inserting a "newline" (<br>).
+      var br = true;
+
+      // Label amount might be: $50 or "1 year membership - $5"
+      var otheramountlabel = ts('Other Amount');
+      var additionalcontriblabel = ts('Additional Contribution');
+
+      var selectedamountlabel = cj('label[for=' + priceid + ']').html();
+
+      if (selectedamountlabel == otheramountlabel) {
         selectedamountlabel = '';
         br = false;
       }
@@ -38,27 +111,24 @@ cj(function($) {
 
         // hides the "field is mandatory" label
         lineitemlabel.find('span').hide();
-        html = lineitemlabel.html();
+        var html = lineitemlabel.html();
 
         // Add divs to display properly
         html = '<div class="label">' + html + '</div>';
         html += '<div class="content">' + selectedamountlabel + '</div>';
 
-        cj('#crm-paymentconfirmpopup-section-amount').html(html);
+        pricehtml += html;
       }
-    }
-
-    // Show "other amount" (and possibly others, not tested on more complex pricesets)
-    var other = cj('#crm-container #priceset .other_amount-section input').filter(function() {
-      return parseInt(cj(this).val(), 10) > 0;
     });
 
-    other.each(function() {
-      var html = cj('#crm-paymentconfirmpopup-section-amount').html();
-
-      if (html) {
+    // Show "other amount" (and possibly others, not tested on more complex pricesets)
+    cj('#crm-container #priceset .other_amount-section input').filter(function() {
+      return parseInt(cj(this).val(), 10) > 0;
+    })
+    .each(function() {
+      if (pricehtml) {
         if (br) {
-          html += '<br/>';
+          pricehtml += '<br/>';
         }
         else {
           br = true;
@@ -94,75 +164,17 @@ cj(function($) {
       cj('#crm-paymentconfirmpopup-section-amount').html(html + label + x);
     });
 
+    cj('#crm-paymentconfirmpopup-section-amount').html(pricehtml);
+
     // Test for recurrent payments
-    if (cj('#is_recur').size() > 0 && cj('#is_recur').is(':checked')) {
-      var recurnode = cj('#is_recur').parent().clone();
-
-      recurnode.find('*').each(function(key, val) {
-        var id = cj(this).attr('id');
-
-        if (id) {
-          cj(this).attr('id', id + '-clone');
-        }
-      });
-
-      var html = recurnode.html();
-      cj('#crm-paymentconfirmpopup-section-recurrent').html(html);
-
-      // copy the original input values, since clone does not
-      // copy the value unless it was part of the original html.
-      cj('#is_recur').parent().find('*').each(function(key, val) {
-        if (! (cj(this).attr('type') == 'text' || cj(this).is('select'))) {
-          return;
-        }
-
-        var id = cj(this).attr('id');
-
-        if (id) {
-          var v = cj(this).val();
-          cj('#' + id + '-clone').val(v);
-          cj('#' + id + '-clone').prop('disabled', true);
-        }
-      });
-
-      // Set the size of the text inputs to the width of their value
-      cj('#crm-paymentconfirmpopup-section-recurrent > input.form-text').each(function(key, val) {
-        var size = cj(this).val();
-        size = '' + size;
-        size = size.length;
-        cj(this).attr('size', size);
-      });
-
-      // Replace the select with its text value
-      if (cj('#crm-paymentconfirmpopup-section-recurrent select#frequency_unit-clone').size() > 0) {
-        var textvalue = cj('#crm-paymentconfirmpopup-section-recurrent select#frequency_unit-clone option:selected').html();
-        cj('#crm-paymentconfirmpopup-section-recurrent select#frequency_unit-clone').replaceWith('<span>' + textvalue + '</span>');
-      }
-
-      // Hide the checkbox clone
-      cj('#is_recur-clone').hide();
-    }
+    paymentconfirmpopup_set_recurrentinfo();
 
     // Show the e-mail of the donor (to make sure we send the receipt to the right person)
     var email = cj('#email-5').val();
     cj('#crm-paymentconfirmpopup-email').html(email);
 
     // Show full name, ex: Mr. John Doe
-    var name = '';
-
-    if (cj('#billing_individual_prefix option:selected').size() > 0) {
-      name += cj('#billing_individual_prefix option:selected').html() + ' ';
-    }
-
-    if (cj('#billing_first_name').size() > 0) {
-      name += cj('#billing_first_name').val() + ' ';
-    }
-
-    if (cj('#billing_first_name').size() > 0) {
-      name += cj('#billing_last_name').val();
-    }
-
-    cj('#crm-paymentconfirmpopup-name').html(name);
+    paymentconfirmpopup_set_name();
 
     // Ready to popup
     // NB: "class" is reserved word in IE8, must be quoted.
@@ -191,6 +203,7 @@ cj(function($) {
         }
       },
       open: function() {
+        // Focus on the "continue" button by default, otherwise it's the first button (cancel).
         cj('.crm-paymentconfirmpopup-continue').focus();
       }
     });
