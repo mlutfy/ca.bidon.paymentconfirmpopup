@@ -85,23 +85,26 @@ function paymentconfirmpopup_civicrm_buildForm($formName, &$form) {
  */
 function paymentconfirmpopup_civicrm_buildForm_CRM_Contribute_Form_Contribution_Main(&$form) {
   $dao = new CRM_Contribute_DAO_ContributionPage();
-  $dao->id = 1;
+  $dao->id = $form->get('id');
 
   if (! $dao->find(TRUE)) {
     // This should never happen
     CRM_Core_Error::fatal("Could not find the ID of the contribution page. Seems like an un-handled use-case. Please submit a bug report with a full backtrace.");
   }
 
+  // We only enable the popup if the confirmation page is disabled.
+  if ($dao->is_confirm_enabled) {
+    return;
+  }
+
   // Add the placeholder for the confirmation popup
-  CRM_Core_Region::instance('page-footer')->add(array(
+  CRM_Core_Region::instance('page-body')->add(array(
     'template' => 'CRM/PaymentConfirmPopup/Inline/PaymentConfirmPopup.tpl',
-    'weight' => 1,
+    'weight' => 99,
   ));
 
   CRM_Core_Resources::singleton()->addStyleFile('ca.bidon.paymentconfirmpopup', 'paymentconfirmpopup.css');
-
-  dsm($dao, 'dao');
-  dsm($form);
+  CRM_Core_Resources::singleton()->addScriptFile('ca.bidon.paymentconfirmpopup', 'paymentconfirmpopup.js');
 }
 
 /**

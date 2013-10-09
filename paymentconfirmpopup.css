@@ -1,4 +1,37 @@
-#crm-contribute-paymentconfirmpopup {
+#crm-paymentconfirmpopup {
   display: none;
+}
+
+/* The default Drupal theme puts a 10px margin-top */
+#crm-paymentconfirmpopup .content {
+  margin: 0;
+  padding: 0;
+}
+
+#crm-paymentconfirmpopup .label {
+  margin: 1em 0 0 0;
+  padding: 0;
+  font-weight: bold;
+}
+
+#crm-paymentconfirmpopup #crm-paymentconfirmpopup-section-recurrent label {
+  display: inline;
+  font-weight: normal;
+}
+
+#crm-paymentconfirmpopup #crm-paymentconfirmpopup-section-recurrent input.form-text {
+  padding: 0;
+  border: 0;
+  background: #fff;
+  color: #000;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus
+
+.ui-state-hover #crm-paymentconfirmpopup-continue,
+.ui-widget-content .ui-state-focus #crm-paymentconfirmpopup-continue,
+.ui-widget-content .ui-state-hover #crm-paymentconfirmpopup-continue {
+  background: #0C0;
+  color: white;
 }
 
