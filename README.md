@@ -31,6 +31,15 @@ Use-cases supported:
 Complex price sets have not been exhaustively tested. If your use case is not
 there, whether it worked or not, please send a screenshot and let me know!
 
+TODO
+====
+
+It can be rather awkward if your form has rather obvious errors and if they
+are not validated before the form is submitted (ex: empty fields). As of
+CiviCRM 4.4, the Main.tpl template has commented out jquery to validate the
+form before submission. We should probably have a better way of plugging into
+that, and also having some support for site-specific validation.
+
 Requirements
 ============
 
