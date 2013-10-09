@@ -5,8 +5,8 @@
   <description>On Contribution public forms, display a popup confirmation before submitting the form. This usually goes well with disabling the CiviCRM confirmation page.</description>
   <license>AGPL3</license>
   <maintainer>
-    <author>FIXME</author>
-    <email>FIXME@example.com</email>
+    <author>Mathieu Lutfy</author>
+    <email>mathieu@nodisys.ca</email>
   </maintainer>
   <releaseDate>2013-10-09</releaseDate>
   <version>1.0</version>
