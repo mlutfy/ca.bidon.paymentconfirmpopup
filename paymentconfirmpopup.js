@@ -71,6 +71,9 @@ cj(function($) {
     cj('#is_recur-clone').hide();
   }
 
+  // Remove the default 'onclick' event on the submit button (since 4.4, has submitOnce JS on it)
+  cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').attr('onclick', '').unbind('click');
+
   cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').click(function() {
     // Check if the form has errors
 /* js validation is still not enabled by default in 4.4. You may want to add JS for validation.
