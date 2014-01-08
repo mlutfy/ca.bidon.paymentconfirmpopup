@@ -1,5 +1,17 @@
 
 cj(function($) {
+  // Remove the default 'onclick' event on the submit button (since 4.4, has submitOnce JS on it)
+  cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input').attr('onclick', '').unbind('click');
+
+  // As of CiviCRM 4.4, this is the most common case: jquery-validate is not enabled by default.
+  // If it is, you will need to explicitely bind the submitHandler.
+  if (CRM.validate.functions.length > 0) {
+    cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').click(function() {
+      paymentconfirmpopup_show_popup();
+    });
+  }
+});
+
   // Helper functions
   function paymentconfirmpopup_set_name() {
     var name = '';
@@ -71,16 +83,7 @@ cj(function($) {
     cj('#is_recur-clone').hide();
   }
 
-  // Remove the default 'onclick' event on the submit button (since 4.4, has submitOnce JS on it)
-  cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').attr('onclick', '').unbind('click');
-
-  cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').click(function() {
-    // Check if the form has errors
-/* js validation is still not enabled by default in 4.4. You may want to add JS for validation.
-    if (cj('#crm-container .crm-contribution-main-form-block .crm-error').size() > 0) {
-      return false;
-    }
-*/
+  function paymentconfirmpopup_show_popup(form) {
     var pricehtml = '';
 
     // Reset the popup content, just in case
@@ -201,7 +204,8 @@ cj(function($) {
             cj('.crm-paymentconfirmpopup-cancel').hide();
             cj('.crm-paymentconfirmpopup-continue').attr('disabled', 'disabled');
             cj('.crm-paymentconfirmpopup-continue .ui-button-text').html(ts('Processing...'));
-            cj('#Main').submit();
+            // cj('#Main').submit();
+            form.submit();
           }
         }
       },
@@ -211,7 +215,6 @@ cj(function($) {
       }
     });
 
-    return false;
-  });
-});
+    return true;
+  }
 
