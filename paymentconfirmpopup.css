@@ -35,3 +35,7 @@
   color: white;
 }
 
+/* Hide the 'is_recur' label, which is usually empty */
+#crm-paymentconfirmpopup #crm-paymentconfirmpopup-section-recurrent .label {
+  display: none;
+}

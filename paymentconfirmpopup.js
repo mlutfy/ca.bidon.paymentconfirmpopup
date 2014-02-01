@@ -32,11 +32,13 @@ cj(function($) {
   }
 
   function paymentconfirmpopup_set_recurrentinfo() {
-    if (cj('#is_recur').size() <= 0 || ! cj('#is_recur').is(':checked')) {
+    // The is_recur is normally a checkbox, but it can be hidden if it was forced in a buildForm() hack.
+    // Ex: for contrib pages that are only for monthly contributions.
+    if (cj('#is_recur').size() <= 0 || ! (cj('#is_recur').is(':checked') || cj('input#is_recur[type="hidden"]').val() == 1)) {
       return;
     }
 
-    var recurnode = cj('#is_recur').parent().clone();
+    var recurnode = cj('#is_recur').parent().parent().clone();
 
     recurnode.find('*').each(function(key, val) {
       var id = cj(this).attr('id');
