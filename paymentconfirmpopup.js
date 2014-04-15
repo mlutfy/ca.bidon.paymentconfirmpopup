@@ -4,9 +4,11 @@ cj(function($) {
   cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input').attr('onclick', '').unbind('click');
 
   // As of CiviCRM 4.4, this is the most common case: jquery-validate is not enabled by default.
-  // If it is, you will need to explicitely bind the submitHandler.
+  // If it is, you will need to explicitely bind the params.submitHandler
+  // c.f. templates/CRM/Form/validate.tpl
   if (CRM.validate.functions.length > 0) {
-    cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').click(function() {
+    cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input.form-submit').click(function(e) {
+      e.preventDefault();
       paymentconfirmpopup_show_popup();
     });
   }
