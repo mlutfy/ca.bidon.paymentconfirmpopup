@@ -87,6 +87,7 @@ cj(function($) {
 
   function paymentconfirmpopup_show_popup(form) {
     var pricehtml = '';
+    var otheramountlabel = '';
 
     // Reset the popup content, just in case
     cj('#crm-paymentconfirmpopup-section-amount').html('');
@@ -101,10 +102,10 @@ cj(function($) {
       var br = true;
 
       // Label amount might be: $50 or "1 year membership - $5"
-      var otheramountlabel = ts('Other Amount');
-      var additionalcontriblabel = ts('Additional Contribution');
-
       var selectedamountlabel = cj('label[for=' + priceid + ']').html();
+
+      // NB: kept in parent namespace because it is re-used later (to rename in the popup).
+      otheramountlabel = ts('Other Amount');
 
       if (selectedamountlabel == otheramountlabel) {
         selectedamountlabel = '';
@@ -146,10 +147,9 @@ cj(function($) {
       // Replace the "Other Amount" label to "Amount" (which may be translated or overriden)
       var re = new RegExp(otheramountlabel);
       var labelamount = ts('Amount');
-
       var label = cj(this).closest('.crm-section').find('.label label').html();
-      label = label.replace(re, labelamount);
 
+      label = label.replace(re, labelamount);
       var x = cj(this).val();
 
       // get pre_help & post_help (usually the currency)
@@ -169,7 +169,7 @@ cj(function($) {
       label = '<div class="label">' + label + '</div>';
       x = '<div class="content">' + x + '</div>';
 
-      cj('#crm-paymentconfirmpopup-section-amount').html(html + label + x);
+      pricehtml += label + x;
     });
 
     cj('#crm-paymentconfirmpopup-section-amount').html(pricehtml);
