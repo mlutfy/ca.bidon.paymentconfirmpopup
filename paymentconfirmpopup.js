@@ -91,6 +91,11 @@ cj(function($) {
     var pricehtml = '';
     var otheramountlabel = '';
 
+    // Log google-analytics, if available
+    if (typeof _gaq != 'undefined') {
+      _gaq.push(['_trackEvent', 'CiviCRMPaymentConfirm', 'PopupOpen']);
+    }
+
     // Reset the popup content, just in case
     cj('#crm-paymentconfirmpopup-section-amount').html('');
 
@@ -198,6 +203,10 @@ cj(function($) {
           text: ts('Cancel'),
           "class": 'crm-paymentconfirmpopup-cancel',
           click: function() {
+            if (typeof _gaq != 'undefined') {
+              _gaq.push(['_trackEvent', 'CiviCRMPaymentConfirm', 'Cancel']);
+            }
+
             cj(this).dialog('close');
           }
         },
@@ -208,8 +217,32 @@ cj(function($) {
             cj('.crm-paymentconfirmpopup-cancel').hide();
             cj('.crm-paymentconfirmpopup-continue').attr('disabled', 'disabled');
             cj('.crm-paymentconfirmpopup-continue .ui-button-text').html(ts('Processing...'));
-            // cj('#Main').submit();
-            form.submit();
+
+            // FIXME: this does not work, because the page reloads, so the event is usually interrupted.
+            if (typeof _gaq != 'undefined') {
+              _gaq.push(['_trackEvent', 'CiviCRMPaymentConfirm', 'Continue']);
+            }
+
+            // Attempt to avoid weird double-POST bug
+            if(! this.wasSent) {
+              this.wasSent = true;
+            }
+            else {
+              return;
+            }
+
+            // The "form" element will have been passed by jquery-validate, if it is enabled
+            // http://jqueryvalidation.org/validate/
+            // and we cannot call the 'submit()' function again if we're using jquery-validate,
+            // because it will try to validate again.
+            if (typeof form == 'undefined') {
+              // contrib form is not using jquery-validate
+              cj('#Main').submit();
+            }
+            else {
+              // contrib form is using jquery-validate
+              form.submit();
+            }
           }
         }
       },
