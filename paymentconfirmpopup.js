@@ -91,6 +91,11 @@ cj(function($) {
     var pricehtml = '';
     var otheramountlabel = '';
 
+    // There may be many contrib amounts (ex: membership + donation)
+    // or just plain "Other Amount" contrib, in which case, we will want
+    // to skip inserting a "newline" (<br>).
+    var br = true;
+
     // Log google-analytics, if available
     if (typeof _gaq != 'undefined') {
       _gaq.push(['_trackEvent', 'CiviCRMPaymentConfirm', 'PopupOpen']);
@@ -102,11 +107,6 @@ cj(function($) {
     // Get the contribution amount
     cj('#crm-container #priceset input:checked').each(function(key, val) {
       var priceid = cj(this).attr('id');
-
-      // There may be many contrib amounts (ex: membership + donation)
-      // or just plain "Other Amount" contrib, in which case, we will want
-      // to skip inserting a "newline" (<br>).
-      var br = true;
 
       // Label amount might be: $50 or "1 year membership - $5"
       var selectedamountlabel = cj('label[for=' + priceid + ']').html();
