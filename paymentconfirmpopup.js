@@ -218,6 +218,17 @@ cj(function($) {
             cj('.crm-paymentconfirmpopup-continue').attr('disabled', 'disabled');
             cj('.crm-paymentconfirmpopup-continue .ui-button-text').html(ts('Processing...'));
 
+            // On iOS (ipad/iphone) Safari wants to prompt the user on whether to save
+            // the CC number of not. The prompt is annoying, and breaks the submit of the
+            // popup (causes a "page cannot be displayed").
+            // c.f. http://stackoverflow.com/questions/20210093/stop-safari-on-ios7-prompting-to-save-card-data
+            try {
+              cj('#credit_card_number').prop('type', 'hidden');
+            }
+            catch (e) {
+              // ignore.
+            }
+
             // FIXME: this does not work, because the page reloads, so the event is usually interrupted.
             if (typeof _gaq != 'undefined') {
               _gaq.push(['_trackEvent', 'CiviCRMPaymentConfirm', 'Continue']);
