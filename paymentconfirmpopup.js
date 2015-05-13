@@ -196,7 +196,7 @@ cj(function($) {
     cj('#crm-paymentconfirmpopup').dialog({
       title: ts('Payment Confirmation'),
       resizable: false,
-      width: '600px',
+      width: (cj('body').width() < 600 ? cj('body').width() + 'px' : '600px'),
       modal: true,
       buttons: {
         'cancel': {
