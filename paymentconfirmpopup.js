@@ -1,5 +1,13 @@
 
 cj(function($) {
+  // Disable on iOS, because there are weird bugs in Safari causing
+  // the connection to be interrupted after clicking the final 'submit' in the popup.
+  var iOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+
+  if (iOS) {
+    return;
+  }
+
   // Remove the default 'onclick' event on the submit button (since 4.4, has submitOnce JS on it)
   cj('#crm-container .crm-contribution-main-form-block #crm-submit-buttons input').attr('onclick', '').unbind('click');
 
