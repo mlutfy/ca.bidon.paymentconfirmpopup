@@ -33,9 +33,15 @@ cj(function($) {
     if (cj('#billing_first_name').size() > 0) {
       name += cj('#billing_first_name').val() + ' ';
     }
+    else if (cj('#first_name').size() > 0) {
+      name += cj('#first_name').val() + ' ';
+    }
 
     if (cj('#billing_first_name').size() > 0) {
       name += cj('#billing_last_name').val();
+    }
+    else if (cj('#last_name').size() > 0) {
+      name += cj('#last_name').val();
     }
 
     cj('#crm-paymentconfirmpopup-name').html(name);
