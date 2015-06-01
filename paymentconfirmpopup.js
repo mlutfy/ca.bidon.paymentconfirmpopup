@@ -120,7 +120,7 @@ cj(function($) {
       var selectedamountlabel = cj('label[for=' + priceid + ']').html();
 
       // NB: kept in parent namespace because it is re-used later (to rename in the popup).
-      otheramountlabel = ts('Other Amount');
+      otheramountlabel = ts('Other Amount', {domain: 'ca.bidon.paymentconfirmpopup'});
 
       if (selectedamountlabel == otheramountlabel) {
         selectedamountlabel = '';
@@ -161,7 +161,7 @@ cj(function($) {
 
       // Replace the "Other Amount" label to "Amount" (which may be translated or overriden)
       var re = new RegExp(otheramountlabel);
-      var labelamount = ts('Amount');
+      var labelamount = ts('Amount', {domain: 'ca.bidon.paymentconfirmpopup'});
       var label = cj(this).closest('.crm-section').find('.label label').html();
 
       label = label.replace(re, labelamount);
@@ -202,13 +202,13 @@ cj(function($) {
     // Ready to popup
     // NB: "class" is reserved word in IE8, must be quoted.
     cj('#crm-paymentconfirmpopup').dialog({
-      title: ts('Payment Confirmation'),
+      title: ts('Payment Confirmation', {domain: 'ca.bidon.paymentconfirmpopup'}),
       resizable: false,
       width: (cj('body').width() < 600 ? cj('body').width() + 'px' : '600px'),
       modal: true,
       buttons: {
         'cancel': {
-          text: ts('Cancel'),
+          text: ts('Cancel', {domain: 'ca.bidon.paymentconfirmpopup'}),
           "class": 'crm-paymentconfirmpopup-cancel',
           click: function() {
             if (typeof _gaq != 'undefined') {
@@ -219,12 +219,12 @@ cj(function($) {
           }
         },
         'continue': {
-          text: ts('Continue'),
+          text: ts('Continue', {domain: 'ca.bidon.paymentconfirmpopup'}),
           "class": 'crm-paymentconfirmpopup-continue',
           click: function() {
             cj('.crm-paymentconfirmpopup-cancel').hide();
             cj('.crm-paymentconfirmpopup-continue').attr('disabled', 'disabled');
-            cj('.crm-paymentconfirmpopup-continue .ui-button-text').html(ts('Processing...'));
+            cj('.crm-paymentconfirmpopup-continue .ui-button-text').html(ts('Processing...', {domain: 'ca.bidon.paymentconfirmpopup'}));
 
             // On iOS (ipad/iphone) Safari wants to prompt the user on whether to save
             // the CC number of not. The prompt is annoying, and breaks the submit of the

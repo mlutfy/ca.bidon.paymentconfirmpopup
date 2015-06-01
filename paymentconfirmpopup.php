@@ -113,12 +113,12 @@ function paymentconfirmpopup_civicrm_buildForm_CRM_Contribute_Form_Contribution_
 function paymentconfirmpopup_civicrm_buildForm_CRM_Contribute_Form_ContributionPage_Settings(&$form) {
   // Trying to future proof weird use-cases of CiviCRM versions
   if (! $form->elementExists('is_confirm_enabled')) {
-    CRM_Core_Session::setStatus(ts('Could not find the confirmation page checkbox option. This version of CiviCRM may not be compatible with this version of the Payment Confirm Popup extension or you have discovered an unsupported use case. Please provide feedback on the <a href="%1">CiviCRM Extensions forum</a>.', array(1 => 'http://forum.civicrm.org/index.php/board,57.0.html')), ts('Payment Confirm Popup extension compatibility issue'), 'alert');
+    CRM_Core_Session::setStatus(ts('Could not find the confirmation page checkbox option. This version of CiviCRM may not be compatible with this version of the Payment Confirm Popup extension or you have discovered an unsupported use case. Please provide feedback on the <a href="%1">CiviCRM Extensions forum</a>.', array(1 => 'http://forum.civicrm.org/index.php/board,57.0.html', 'domain' => 'ca.bidon.paymentconfirmpopup')), ts('Payment Confirm Popup extension compatibility issue', array('domain' => 'ca.bidon.paymentconfirmpopup')), 'alert');
   }
 
   // Alter the "enable form confirmation" setting to mention that this extension
   // will enable itself automatically if you disable confirmations.
   $e = $form->getElement('is_confirm_enabled');
-  $e->setLabel(ts('Use a confirmation page? (if not, a confirmation popup will be displayed, using the <a href="%1" target="_blank">Payment Confirm Popup extension</a>.)', array(1 => 'https://github.com/mlutfy/ca.bidon.paymentconfirmpopup')));
+  $e->setLabel(ts('Use a confirmation page? (if not, a confirmation popup will be displayed, using the <a href="%1" target="_blank">Payment Confirm Popup extension</a>.)', array(1 => 'https://github.com/mlutfy/ca.bidon.paymentconfirmpopup', 'domain' => 'ca.bidon.paymentconfirmpopup')));
 }
 
